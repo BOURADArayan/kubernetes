@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: ims
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+      io.kompose.service: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+        io.kompose.service: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:6.0
+        command: ["mongod", "--bind_ip", "0.0.0.0"]
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-storage
+        persistentVolumeClaim:
+          claimName: mongo-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: ims
+spec:
+  selector:
+    app: mongo
+    io.kompose.service: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017

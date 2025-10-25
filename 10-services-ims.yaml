@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hss
+  namespace: ims
+spec:
+  selector:
+    io.kompose.service: hss
+  ports:
+  - name: diameter
+    port: 3868
+    targetPort: 3868
+  - name: web
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pcrf
+  namespace: ims
+spec:
+  selector:
+    io.kompose.service: pcrf
+  ports:
+  - name: diameter
+    port: 3868
+    targetPort: 3868
+  - name: metrics
+    port: 9091
+    targetPort: 9091
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pcscf
+  namespace: ims
+spec:
+  selector:
+    io.kompose.service: pcscf
+  ports:
+  - name: sip-udp
+    protocol: UDP
+    port: 5060
+    targetPort: 5060
+  - name: sip-tcp
+    protocol: TCP
+    port: 5060
+    targetPort: 5060
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: icscf
+  namespace: ims
+spec:
+  selector:
+    io.kompose.service: icscf
+  ports:
+  - name: sip
+    port: 4060
+    targetPort: 4060
+  - name: diameter
+    port: 3869
+    targetPort: 3869
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scscf
+  namespace: ims
+spec:
+  selector:
+    io.kompose.service: scscf
+  ports:
+  - name: sip
+    port: 6060
+    targetPort: 6060
+  - name: diameter
+    port: 3870
+    targetPort: 3870

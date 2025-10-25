@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: ims
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      io.kompose.service: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+        io.kompose.service: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "linux"
+        - name: MYSQL_DATABASE
+          value: "open5gs"
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: ims
+spec:
+  selector:
+    app: mysql
+    io.kompose.service: mysql
+  ports:
+  - port: 3306
+    targetPort: 3306
